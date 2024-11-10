@@ -31,6 +31,14 @@ def product_post():
 def product(id):
     return render_template('products.html', productid = id)
 
+@app.route("/users/")
+def users():
+    firstName = request.args.get('fname')
+    lastName = request.args.get('lname', default="")
+    print(request.args)
+    # do whatever you want with the values
+    return f"<h1> Users page: {firstName} {lastName} </h1>"
+
 @app.route("/users/<username>/")
 def user(username):
     return f"<h1> User: #{escape(username)} </h1>"
