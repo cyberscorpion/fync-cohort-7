@@ -31,6 +31,21 @@ def product_post():
 def product(id):
     return render_template('products.html', productid = id)
 
+# @app.route("/users/", methods=['GET', 'POST'])
+# def users():
+#     if request.method == 'POST':
+#         firstName = request.form['fname']
+#         lastName = request.form['lname']
+#         print(request.form)
+#         # do whatever you want with the values
+#         return f"<h1> Users page: {firstName} {lastName} </h1>"
+#     else:
+#         firstName = request.args.get('fname')
+#         lastName = request.args.get('lname', default="")
+#         print(request.args)
+#         # do whatever you want with the values
+#         return f"<h1> Users page: {firstName} {lastName} </h1>"
+    
 @app.get("/users/")
 def users_get():
     firstName = request.args.get('fname')
