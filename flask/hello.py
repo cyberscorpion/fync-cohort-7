@@ -1,11 +1,16 @@
-from flask import Flask,request
+from flask import Flask, request, render_template
 from markupsafe import escape
 
 app = Flask(__name__)
 
 @app.route("/")
-def hello_world():
-    return "<p> Hello World </p>"
+def homepage():
+    return render_template('homepage.html')
+
+@app.route("/hello/")
+@app.route("/hello/<name>")
+def greet(name = None):
+    return render_template('greet.html', name=name)
 
 # @app.route("/products/", methods=['GET', 'POST'])
 # def products():
@@ -24,7 +29,7 @@ def product_post():
 
 @app.route("/products/<int:id>")
 def product(id):
-    return f"<h1> Product: #{escape(id)} </h1>"
+    return render_template('products.html', productid = id)
 
 @app.route("/users/<username>/")
 def user(username):
