@@ -1,10 +1,14 @@
 from flask import Flask, request, render_template
 from markupsafe import escape
+from models import Products
+from database import session
 
 app = Flask(__name__)
 
 @app.route("/")
 def homepage():
+    # add_Product()
+    get_Product()
     return render_template('homepage.html')
 
 @app.route("/hello/")
@@ -21,7 +25,13 @@ def greet(name = None):
     
 @app.get("/products/")
 def product_get():
-        return "<h1> Products Get</h1>"
+        products = get_Product()
+        page = "<h1> Products Get</h1>"
+        page += '<ul>'
+        for product in products:
+            page += f'<li>{product.name} </li>'
+        page += '</ul>'
+        return page
 
 @app.post("/products/")
 def product_post():
@@ -70,3 +80,10 @@ def user(username):
 def about(subpath):
     return f"<h1> Path: #{escape(subpath)} </h1>"
 
+# def add_Product():
+#     product = Products(name = "Product1", price = 20, quantity = 10)
+#     session.add(product)
+#     session.commit()
+
+def get_Product():
+    return session.query(Products).all()
