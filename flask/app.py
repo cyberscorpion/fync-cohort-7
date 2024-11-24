@@ -24,10 +24,16 @@ def greet(name = None):
 #     else:
 #         return "<h1> Products </h1>"
     
+# products page without API
+# @app.get("/products/")
+# def product_get():
+#     products = get_Product()
+#     return render_template('products.html', products = products)
+
+# products page with API
 @app.get("/products/")
 def product_get():
-    products = get_Product()
-    return render_template('products.html', products = products)
+    return render_template('products_with_api.html')
 
 @app.get("/deleteproduct/<int:id>/")
 def deleteProduct(id):

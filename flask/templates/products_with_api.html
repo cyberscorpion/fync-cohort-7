@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Products</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>All products </h1> 
+        <a href="/addproduct">Add product</a>
+        <table class="table table-striped">
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Delete</th>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('/api/products')
+            .then(response => response.json())
+            .then(data => {
+                let table = document.querySelector('.table');
+                data.forEach(product => {
+                    let row = document.createElement('tr')
+                    row.innerHTML += `
+                        <td>${product.id}</td>
+                        <td>${product.name}</td>
+                        <td>${product.price}</td>
+                        <td>${product.quantity}</td>
+                        <td><a href="/deleteproduct/${product.id}">Delete</a></td>
+                    `
+                    table.appendChild(row);
+                });
+            })
+            .catch(error => alert("API fail"))
+        })
+    </script>
+</body>
+</html>
