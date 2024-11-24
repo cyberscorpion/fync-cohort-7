@@ -130,6 +130,15 @@ class ProductResource(Resource):
             })
         return jsonify(data)
     
+    def post(self):
+        name = request.form['name']
+        price = int(request.form['price'])
+        quantity = int(request.form['quantity'])
+        add_Product(name, price, quantity)
+        return jsonify({
+            'message': 'Product Added'
+        })
+    
 class UserResource(Resource):
     def get(self):
         return jsonify({
