@@ -1,13 +1,14 @@
-from flask import Flask, request, render_template
+from flask import Flask, jsonify, request, render_template
 from markupsafe import escape
 from models import Products
 from database import session
+from flask_restful import Resource, Api
 
 app = Flask(__name__)
+api = Api(app)
 
 @app.route("/")
 def homepage():
-    # add_Product()
     get_Product()
     return render_template('homepage.html')
 
@@ -25,21 +26,33 @@ def greet(name = None):
     
 @app.get("/products/")
 def product_get():
-        products = get_Product()
-        page = "<h1> Products Get</h1>"
-        page += '<ul>'
-        for product in products:
-            page += f'<li>{product.name} </li>'
-        page += '</ul>'
-        return page
+    products = get_Product()
+    return render_template('products.html', products = products)
 
-@app.post("/products/")
+@app.get("/deleteproduct/<int:id>/")
+def deleteProduct(id):
+    product = session.query(Products).filter_by(id = id).first()
+    session.delete(product)
+    session.commit()
+    return "<h2> Product deleted </h2>"
+
+    
+@app.get("/addproduct/")
+def product_add():
+    return render_template('addProduct.html')
+
+
+@app.post("/addproduct/")
 def product_post():
-        return "<h1> Products Post </h1>"
+    name = request.form['name']
+    price = int(request.form['price'])
+    quantity = int(request.form['quantity'])
+    add_Product(name, price, quantity)
+    return "<h2> Product Added </h2>"
 
 @app.route("/products/<int:id>")
 def product(id):
-    return render_template('products.html', productid = id)
+    return "<h2> Product details page to work </h2>"
 
 # @app.route("/users/", methods=['GET', 'POST'])
 # def users():
@@ -80,10 +93,42 @@ def user(username):
 def about(subpath):
     return f"<h1> Path: #{escape(subpath)} </h1>"
 
-# def add_Product():
-#     product = Products(name = "Product1", price = 20, quantity = 10)
-#     session.add(product)
-#     session.commit()
+def add_Product(name, price, quantity):
+    product = Products(name = name, price = price, quantity = quantity)
+    session.add(product)
+    session.commit()
 
 def get_Product():
     return session.query(Products).all()
+
+## Rest APIs
+
+@app.route("/api/data")
+def getData():
+    data = {
+        'data' : 'Rajat Jain'
+    }
+    return jsonify(data)
+
+class ProductResource(Resource):
+
+    def get(self):
+        products = get_Product()
+        data = []
+        for product in products:
+            data.append({
+                'id' : product.id,
+                'name': product.name,
+                'quantity' : product.quantity,
+                'price': product.price
+            })
+        return jsonify(data)
+    
+class UserResource(Resource):
+    def get(self):
+        return jsonify({
+            'user_count' : 3
+        })
+    
+api.add_resource(ProductResource, '/api/products')
+api.add_resource(UserResource, '/api/users')

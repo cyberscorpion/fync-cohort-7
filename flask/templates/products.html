@@ -2,8 +2,30 @@
 <html lang="en">
 <head>
     <title>Products</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <h1>Product detail {{ productid }} # </h1> 
+    <div class="container">
+        <h1>All products </h1> 
+        <a href="/addproduct">Add product</a>
+        <table class="table table-striped">
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Delete</th>
+            </tr>
+            {% for item in products %}
+            <tr>
+                <td>{{item.id}}</td>
+                <td>{{item.name}}</td>
+                <td>{{item.price}}</td>
+                <td>{{item.quantity}}</td>
+                <td><a href="/deleteproduct/{{item.id}}">Delete</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 </body>
 </html>
