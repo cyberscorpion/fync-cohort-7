@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Path
 from typing import Union
+from enum import Enum
 
 app = FastAPI()
 
@@ -47,9 +48,30 @@ students = {
 }
 
 @app.get("/students/{student_id}")
-def getStudents(student_id: int = Path(description="The ID of the student", gt=0)):
+def getStudents(student_id: int = Path(description="The ID of the student", gt=0, lt=2)):
     return students[student_id]
 
 @app.get("/items/{item_id}")
 def read_item(item_id: int = Path(description="Id of item"), product: str= None):
     return {"item_id": item_id, "product": product}
+
+class AvailableCuisines(str, Enum):
+    indian = "indian"
+    american = "american"
+    italian = "italian"
+
+food_items = {
+    'indian' : [ "Samosa", "Dosa"],
+    'american': ["Hot Dog", "Apple Pie"],
+    'italian': ['Pizza', "Ravioli"]
+}
+
+@app.get("/foods/{cuisine}")
+def getFoodItems(cuisine: AvailableCuisines):
+
+    if cuisine not in food_items.keys():
+        return {
+            'error' : 'not found'
+        }
+
+    return food_items.get(cuisine)
