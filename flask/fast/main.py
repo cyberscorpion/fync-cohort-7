@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Path
 from typing import Union
 from enum import Enum
+from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -75,3 +76,14 @@ def getFoodItems(cuisine: AvailableCuisines):
         }
 
     return food_items.get(cuisine)
+
+class User(BaseModel):
+    username: str
+    password: str
+
+@app.post("/user/login")
+def userLogin(user: User):
+    return {
+        'username': user.username,
+        'password': user.password
+    }
